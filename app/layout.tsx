@@ -49,8 +49,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       {/*
-        Favicon: replace app/favicon.ico (and optional apple-icon.png) with your own.
-        See https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
+        App icon: `app/icon.svg` (CL monogram). Optional: `app/apple-icon.png` for iOS home screen.
+        https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
       */}
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}

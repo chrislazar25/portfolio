@@ -10,7 +10,10 @@ function heroLinks() {
   const { email, social } = site;
   const resumeLabel = "Resume";
   return [
-    { label: "Email", href: `mailto:${email}` },
+    {
+      label: "Email",
+      href: `mailto:${email}?subject=${encodeURIComponent("Hello")}`,
+    },
     {
       label: resumeLabel,
       href: social.resume || "",
@@ -28,23 +31,36 @@ export default function Home() {
         name={site.name}
         role={site.role}
         headline={site.headline}
+        headlineDetail={site.headlineDetail}
+        publication={site.publication}
         links={links}
       />
       <main>
-        <Section id="projects" eyebrow="Work" title="Featured projects">
-          <div className="space-y-8 !mt-0">
-            {site.projects.map((project) => (
-              <ProjectCard key={project.title} project={project} />
-            ))}
-          </div>
+        <Section id="projects" eyebrow="Work" title="Selected work">
+          <>
+            {site.projectsIntro ? (
+              <p className="!mt-0 text-pretty text-muted">{site.projectsIntro}</p>
+            ) : null}
+            <div
+              className={`space-y-8 !mt-0${site.projectsIntro ? " !mt-6" : ""}`}
+            >
+              {site.projects.map((project) => (
+                <ProjectCard key={project.title} project={project} />
+              ))}
+            </div>
+          </>
         </Section>
         <Section id="skills" eyebrow="Capabilities" title="Skills">
           <div className="!mt-0">
-            <Skills groups={site.skillGroups} />
+            <Skills intro={site.skillsIntro} groups={site.skillGroups} />
           </div>
         </Section>
         <Section id="about" eyebrow="Background" title="About">
-          <p className="!mt-0 text-muted">{site.bio}</p>
+          <div className="!mt-0 space-y-4 text-muted [&_p]:text-pretty">
+            {site.aboutParagraphs.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
         </Section>
         <Section id="contact" eyebrow="Collaborate" title="Contact">
           <div className="!mt-0">

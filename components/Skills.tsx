@@ -1,8 +1,18 @@
 import type { SkillGroup } from "@/content/site";
 
-export function Skills({ groups }: { groups: readonly SkillGroup[] }) {
+export function Skills({
+  intro,
+  groups,
+}: {
+  intro?: string;
+  groups: readonly SkillGroup[];
+}) {
   return (
-    <div className="grid gap-8 sm:grid-cols-2">
+    <div className="space-y-8">
+      {intro ? (
+        <p className="text-sm leading-relaxed text-pretty text-muted">{intro}</p>
+      ) : null}
+      <div className="grid gap-8 sm:grid-cols-2">
       {groups.map((group) => (
         <div key={group.title}>
           <h3 className="text-base font-semibold text-foreground">
@@ -18,6 +28,7 @@ export function Skills({ groups }: { groups: readonly SkillGroup[] }) {
           </ul>
         </div>
       ))}
+      </div>
     </div>
   );
 }

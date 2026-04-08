@@ -13,7 +13,7 @@ export function Contact({ email, githubUrl, linkedinUrl }: ContactProps) {
         Prefer email for opportunities:{" "}
         <a
           className="font-medium text-[var(--accent)] underline-offset-4 hover:underline"
-          href={`mailto:${email}`}
+          href={`mailto:${email}?subject=${encodeURIComponent("Hello")}`}
         >
           {email}
         </a>
