@@ -57,7 +57,7 @@ export const site = {
   } satisfies Publication,
   /** Context for project cards without repeating the employer name on every title. */
   projectsIntro:
-    "Most of my recent ownership is production AI at Dell Technologies (Fortune-scale scope)—systems I took from problem framing through live operations. The last card is a public build that shows how I treat product UX when the canvas is open-ended.",
+    "First card is a project im currently working on. Most of my recent ownership is production AI at Dell Technologies (Fortune-scale scope)—systems I took from problem framing through live operations. The last card is a public build that shows how I treat product UX when the canvas is open-ended.",
   /** Shown in About; order is visual top-to-bottom. */
   aboutParagraphs: [
     "I'm bought in on end-to-end ownership: narrow the problem with leadership, staff the shortest path to a shipped v1, stay on the hook for prod quality. Small teams, ruthless prioritization, fast feedback loops.",
@@ -77,6 +77,33 @@ export const site = {
       "/Chris_Lazar_Resume (1).pdf",
   } satisfies Record<string, string>,
   projects: [
+    {
+      title: "MemoryOS",
+      summary:
+        "A memory layer for coding agents that makes the 'why' behind every commit queryable. Git records what changed — MemoryOS records why.",
+      highlights: [
+      "Designed coding-native memory primitives: decision, tradeoff, incident — unit of memory is a commit, not a message",
+      "Built ingest → SQLite → TF-IDF retrieval pipeline with FastAPI REST API",
+      "Exposed memory as an MCP tool so any coding agent can retrieve context before making changes",
+      "Timeline UI that lets developers understand a codebase's decision history at a glance",
+      ],
+      stack: [
+        "Python",
+        "FastAPI", 
+        "SQLite", 
+        "TF-IDF", 
+        "React", 
+        "TypeScript", 
+        "MCP",
+      ],
+      liveUrl: "https://memory-os-sigma.vercel.app/",
+      repoUrl: "https://github.com/chrislazar25/memoryOS",
+      preview: {
+        alt: "MemoryOS query UI.",
+        src: "/previews/memoryos.png",
+        media: "image",
+      }
+    },
     {
       title: "Multilingual contract intelligence",
       summary:
