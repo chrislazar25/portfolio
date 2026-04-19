@@ -57,7 +57,7 @@ export const site = {
   } satisfies Publication,
   /** Context for project cards without repeating the employer name on every title. */
   projectsIntro:
-    "First card is a project im currently working on. Most of my recent ownership is production AI at Dell Technologies (Fortune-scale scope)—systems I took from problem framing through live operations. The last card is a public build that shows how I treat product UX when the canvas is open-ended.",
+    "First card is a project im currently working on. Most of my recent ownership is production AI at Dell Technologies (Fortune-scale scope)—systems I took from problem framing through live operations. The last two cards are public builds: daily gospel automation for a family WhatsApp group, then an open-ended 3D surface that shows how I treat product UX when the canvas is open-ended.",
   /** Shown in About; order is visual top-to-bottom. */
   aboutParagraphs: [
     "I'm bought in on end-to-end ownership: narrow the problem with leadership, staff the shortest path to a shipped v1, stay on the hook for prod quality. Small teams, ruthless prioritization, fast feedback loops.",
@@ -172,6 +172,18 @@ export const site = {
         "Prompt Engineering",
         "PostgreSQL",
       ],
+    },
+    {
+      title: "Gospel Bot",
+      summary:
+        "Daily gospel reflections for a family WhatsApp group: pulls today's reading from the Catholic lectionary, matches a personal archive of messages by scripture citation, and delivers the best fit via Green API—with email previews, retries, and a watchdog.",
+      highlights: [
+        "Normalized book names and citation formats so archive entries align with the day's text—including multi-chapter ranges and non-standard shorthand.",
+        "IST cron: preview email, scheduled send, watchdog retries; failed sends queue for the next flush instead of vanishing.",
+        "Green API for WhatsApp delivery; Nodemailer for Gmail previews and alerts; Catholic Readings API with scripture fallback when the archive has no match.",
+      ],
+      stack: ["Node.js", "Green API", "node-cron", "Nodemailer", "REST"],
+      repoUrl: "https://github.com/chrislazar25/gospel-bot",
     },
     {
       title: "Interactive 3D fleet visualization",
