@@ -10,7 +10,7 @@ export function Footer({ name, githubUrl, linkedinUrl }: FooterProps) {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-[color-mix(in_oklab,var(--foreground)_12%,transparent)]">
-      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="shell footer-content">
         <p>
           © {year} {name}
         </p>
