@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://clazar.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -48,10 +48,6 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      {/*
-        App icon: `app/icon.svg` (CL monogram). Optional: `app/apple-icon.png` for iOS home screen.
-        https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
-      */}
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
       </body>

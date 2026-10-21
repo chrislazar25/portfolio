@@ -14,7 +14,6 @@ function videoType(src: string): string | undefined {
   return undefined;
 }
 
-/** Accepts Loom share or embed URLs; returns canonical embed URL or null if invalid. */
 function toLoomEmbedUrl(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
@@ -44,113 +43,59 @@ function isLoomPreview(
 }
 
 export function ProjectCard({ project }: { project: Project }) {
-  const {
-    title,
-    summary,
-    highlights,
-    stack,
-    liveUrl,
-    repoUrl,
-    isPlaceholder,
-    preview,
-  } = project;
-  const hasLinks = Boolean(liveUrl || repoUrl);
+  const { title, summary, highlights, stack, liveUrl, liveLabel, repoUrl, preview,
+    previewLabel, question, decision, scope, evidenceUrl, mechanism } = project;
   const loomEmbed = preview && isLoomPreview(preview) ? toLoomEmbedUrl(preview.loomUrl) : null;
   const filePreview = preview && !isLoomPreview(preview) ? preview : null;
   const showVideo = filePreview ? previewIsVideo(filePreview.src, filePreview.media) : false;
-  const showPreview = Boolean(loomEmbed || filePreview);
-  const previewTitle = preview?.alt ?? "";
   return (
-    <article
-      className={`rounded-xl border p-6 sm:p-7 ${
-        isPlaceholder
-          ? "border-dashed border-[color-mix(in_oklab,var(--foreground)_22%,transparent)] bg-[color-mix(in_oklab,var(--foreground)_4%,transparent)]"
-          : "border-[color-mix(in_oklab,var(--foreground)_14%,transparent)] bg-[color-mix(in_oklab,var(--foreground)_5%,transparent)]"
-      }`}
-    >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-        {isPlaceholder ? (
-          <span className="rounded-full bg-[color-mix(in_oklab,var(--accent)_22%,transparent)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent)]">
-            Coming soon
-          </span>
-        ) : null}
+    <article className="project-card">
+      <div className="project-heading">
+        <h3>{title}</h3>
+        <div className="project-links">
+          {liveUrl ? <ExternalLink href={liveUrl} className="project-primary">{liveLabel ?? "Live demo"} <span aria-hidden="true">↗</span></ExternalLink> : null}
+          {repoUrl ? <ExternalLink href={repoUrl}>Source <span aria-hidden="true">↗</span></ExternalLink> : null}
+          {evidenceUrl ? <ExternalLink href={evidenceUrl} className={!liveUrl ? "project-primary" : undefined}>Evidence <span aria-hidden="true">↗</span></ExternalLink> : null}
+        </div>
       </div>
-      {showPreview ? (
-        <div className="mt-4 overflow-hidden rounded-lg border border-[color-mix(in_oklab,var(--foreground)_14%,transparent)] bg-[color-mix(in_oklab,var(--foreground)_6%,transparent)] shadow-[inset_0_1px_0_0_color-mix(in_oklab,var(--foreground)_8%,transparent)]">
+      {loomEmbed || filePreview ? (
+        <figure className="project-preview">
+          {previewLabel ? <figcaption>{previewLabel}</figcaption> : null}
           {loomEmbed ? (
-            <div className="relative aspect-video max-h-52 w-full sm:max-h-56">
-              <iframe
-                src={loomEmbed}
-                title={previewTitle}
-                className="absolute inset-0 h-full w-full border-0"
-                allow="fullscreen"
-                allowFullScreen
-                loading="lazy"
-              />
+            <div className="embed-frame">
+              <iframe src={loomEmbed} title={preview?.alt} allow="fullscreen" allowFullScreen loading="lazy" />
             </div>
           ) : filePreview && showVideo ? (
-            <video
-              className="aspect-video max-h-52 w-full object-cover sm:max-h-56"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-label={filePreview.alt}
-            >
+            <video controls playsInline preload="metadata" aria-label={filePreview.alt}>
               <source src={filePreview.src} type={videoType(filePreview.src)} />
             </video>
           ) : filePreview ? (
-            // eslint-disable-next-line @next/next/no-img-element -- small local previews; avoids Image layout constraints for mixed GIF/WebP
-            <img
-              src={filePreview.src}
-              alt={filePreview.alt}
-              className="aspect-video max-h-52 w-full object-cover object-center sm:max-h-56"
-              loading="lazy"
-              decoding="async"
-            />
+            <a className="screenshot-link" href={filePreview.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full screenshot of ${title} in a new tab`}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- local previews retain their original aspect ratio. */}
+              <img src={filePreview.src} alt={filePreview.alt} loading="lazy" decoding="async" />
+              <span className="screenshot-caption">Open full screenshot <span aria-hidden="true">↗</span></span>
+            </a>
           ) : null}
-        </div>
+        </figure>
       ) : null}
-      <p className="mt-3 text-pretty text-muted">{summary}</p>
-      <ul className="mt-4 list-inside list-disc space-y-1.5 text-sm text-muted">
-        {highlights.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      <p className="mt-4 text-xs font-medium uppercase tracking-wide text-muted">
-        Stack
-      </p>
-      <ul className="mt-2 flex flex-wrap gap-2">
-        {stack.map((item) => (
-          <li key={item}>
-            <span className="inline-block rounded-md border border-[color-mix(in_oklab,var(--foreground)_14%,transparent)] px-2 py-1 text-xs text-foreground">
-              {item}
-            </span>
-          </li>
-        ))}
-      </ul>
-      {hasLinks ? (
-        <div className="mt-6 flex flex-wrap gap-3 text-sm font-medium">
-          {liveUrl ? (
-            <ExternalLink
-              href={liveUrl}
-              className="text-[var(--accent)] underline-offset-4 hover:underline"
-            >
-              Live demo
-            </ExternalLink>
-          ) : null}
-          {repoUrl ? (
-            <ExternalLink
-              href={repoUrl}
-              className="text-[var(--accent)] underline-offset-4 hover:underline"
-            >
-              Source
-            </ExternalLink>
-          ) : null}
-        </div>
+      {mechanism ? (
+        <figure className="mechanism">
+          <figcaption>Mechanism diagram / receipt path</figcaption>
+          <ol>
+            {mechanism.map((step, i) => <li key={step}><span className="step-number">0{i + 1}</span><span>{step}</span><span className="step-arrow" aria-hidden="true">{i === mechanism.length - 1 ? "✓" : "↓"}</span></li>)}
+          </ol>
+          <p>Proposed rules pass a separate deterministic replay gate.</p>
+        </figure>
       ) : null}
+      <div className="project-copy">
+        {question ? <h4>{question}</h4> : null}
+        <p>{summary}</p>
+        {decision ? <div className="project-decision"><span className="small-label">The engineering decision</span><p>{decision}</p></div> : null}
+        {highlights.length ? <ul className="project-highlights">{highlights.map((item) => <li key={item}>{item}</li>)}</ul> : null}
+        {scope ? <p className="project-scope">{scope}</p> : null}
+        <p className="project-stack">{stack.join(" / ")}</p>
+        {preview && isLoomPreview(preview) ? <ExternalLink href={preview.loomUrl} className="text-link">Open recording <span aria-hidden="true">↗</span></ExternalLink> : null}
+      </div>
     </article>
   );
 }

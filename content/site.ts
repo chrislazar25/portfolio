@@ -1,240 +1,152 @@
-export type SocialLink = {
-  label: string;
-  href: string;
-};
-
-/** Local file under `public/` or a Loom share/embed link (no account video file needed). */
 export type ProjectPreview =
-  | {
-      alt: string;
-      /** Path under `public/`, e.g. `/previews/demo.webm` */
-      src: string;
-      /** Defaults inferred from `src` (.mp4, .webm, .mov → video). */
-      media?: "image" | "video";
-    }
-  | {
-      alt: string;
-      /** `https://www.loom.com/share/…` or `…/embed/…` */
-      loomUrl: string;
-    };
+  | { alt: string; src: string; media?: "image" | "video" }
+  | { alt: string; loomUrl: string };
 
 export type Project = {
   title: string;
   summary: string;
   highlights: string[];
   stack: string[];
+  category: "featured" | "more";
+  question?: string;
+  decision?: string;
+  scope?: string;
+  evidenceUrl?: string;
   liveUrl?: string;
+  liveLabel?: string;
   repoUrl?: string;
-  isPlaceholder?: boolean;
   preview?: ProjectPreview;
+  previewLabel?: string;
+  mechanism?: string[];
 };
 
-export type SkillGroup = {
-  title: string;
-  items: string[];
-};
-
+export type ProductionWork = Pick<Project, "title" | "summary" | "highlights">;
 export type Publication = {
   title: string;
   venue: string;
   href: string;
-  attribution?: string;
+  attribution: string;
 };
 
 export const site = {
   name: "Chris Lazar",
   role: "AI Engineer",
-  /** Single scannable hook; details in `headlineDetail`. */
-  headline:
-    "I run 0→1 mandates from vague brief to production—product, APIs, models, and whatever stack is in the way.",
+  headline: "I turn hard product questions into working software.",
   headlineDetail:
-    "Ship weekly, measure honestly: evals, latency budgets, and tracing so launches survive real users—not demo day.",
+    "What can a battery fleet promise during a storm? When should a voice agent stop? I build systems to find out, alongside production AI at Dell.",
+  email: "chriskennlazar@gmail.com",
+  social: {
+    github: "https://github.com/chrislazar25",
+    linkedin: "https://www.linkedin.com/in/chrislazar25/",
+    resume: "/Chris_Lazar_Resume (1).pdf",
+  },
   publication: {
     title: "How Does Entropy Influence Modern Text-to-SQL Systems?",
     venue: "ICLR 2025 Building Trust workshop",
     href: "https://openreview.net/forum?id=JhhLGvpr9N",
     attribution: "Equal contribution",
   } satisfies Publication,
-  /** Context for project cards without repeating the employer name on every title. */
-  projectsIntro:
-    "First card is a project im currently working on. Most of my recent ownership is production AI at Dell Technologies (Fortune-scale scope)—systems I took from problem framing through live operations. The last two cards are public builds: daily gospel automation for a family WhatsApp group, then an open-ended 3D surface that shows how I treat product UX when the canvas is open-ended.",
-  /** Shown in About; order is visual top-to-bottom. */
-  aboutParagraphs: [
-    "I'm bought in on end-to-end ownership: narrow the problem with leadership, staff the shortest path to a shipped v1, stay on the hook for prod quality. Small teams, ruthless prioritization, fast feedback loops.",
-    "I'm especially interested in Series A teams; pre-seed and seed when runway and mandate are real. I lead with AI engineer as the title that matches my experience—and I'm most energized when the mandate looks like early IC or founding-engineer scope: 0→1 features, prod ownership, and tight loops with leadership.",
-    "Proof beats pitch: multilingual deal-room intelligence, internal-facing LLM latency that cleared an org-wide ship bar, guarded finance copilots, metadata into systems of record. Co-author on the workshop paper linked above (text-to-SQL / uncertainty). Co-inventor on employer-filed patent application(s) in USPTO prosecution—RAG-side R&D tied to inference cost and reliability wins in production paths.",
-    "I'm actively relocating to the San Francisco Bay Area.",
-  ] as const,
-  /** One line above the skills grid. */
-  skillsIntro:
-    "I stack-rank whatever blocks revenue or trust—surface, services, model behavior, or Kubernetes when that's the constraint—then ship with measurable quality and short cycles.",
-  email: "chriskennlazar@gmail.com",
-  /** Replace with your public URLs before sharing the site. */
-  social: {
-    github: "https://github.com/chrislazar25",
-    linkedin: "https://www.linkedin.com/in/chrislazar25/",
-    resume:
-      "/Chris_Lazar_Resume (1).pdf",
-  } satisfies Record<string, string>,
-  projects: [
+  publicBuilds: [
+    {
+      title: "Simuritor",
+      category: "featured",
+      question: "How much can a battery fleet promise during a storm?",
+      summary: "A grid replay that explores the tradeoff between utility commitments and household backup reserves.",
+      decision: "Deterministic dispatch makes each reserve and contract decision inspectable against historical prices and weather.",
+      scope: "Simulated batteries and public historical data. A replay cannot guarantee real fleet performance.",
+      highlights: [],
+      stack: ["Python", "Simulation", "React", "TypeScript"],
+      liveUrl: "https://www.loom.com/share/2e72a407f1cb4d49aa9815822353747e",
+      liveLabel: "Watch walkthrough",
+      repoUrl: "https://github.com/chrislazar25/simuritor",
+      evidenceUrl: "https://github.com/chrislazar25/simuritor/blob/main/docs/notes.md",
+      previewLabel: "Recorded simulation",
+      preview: {
+        alt: "Simuritor simulation with a fleet map, backup reserve controls, and grid replay results.",
+        src: "/previews/simuritor.png",
+        media: "image",
+      },
+    },
+    {
+      title: "Tellr",
+      category: "featured",
+      question: "When should a voice agent stop before it commits?",
+      summary: "A synthetic voice-payment receipt experiment that preserves approval evidence and checks rules before a receipt commits.",
+      decision: "A model proposes constrained rules. A deterministic replay gate checks them, and commit-time enforcement applies them.",
+      scope: "Synthetic voices. Receipts only, no money transfers. Amount errors remain an unresolved failure mode.",
+      highlights: [],
+      stack: ["Voice agents", "Replay evals", "MongoDB"],
+      repoUrl: "https://github.com/chrislazar25/tellr",
+      evidenceUrl: "https://github.com/chrislazar25/tellr/blob/main/RESULTS.md",
+      mechanism: ["Speech evidence", "Approval snapshot", "Commit-time check", "Guarded receipt"],
+    },
     {
       title: "MemoryOS",
-      summary:
-        "A memory layer for coding agents that makes the 'why' behind every commit queryable. Git records what changed — MemoryOS records why.",
-      highlights: [
-      "Designed coding-native memory primitives: decision, tradeoff, incident — unit of memory is a commit, not a message",
-      "Built ingest → SQLite → TF-IDF retrieval pipeline with FastAPI REST API",
-      "Exposed memory as an MCP tool so any coding agent can retrieve context before making changes",
-      "Timeline UI that lets developers understand a codebase's decision history at a glance",
-      ],
-      stack: [
-        "Python",
-        "FastAPI", 
-        "SQLite", 
-        "TF-IDF", 
-        "React", 
-        "TypeScript", 
-        "MCP",
-      ],
+      category: "more",
+      summary: "A commit-linked decision log that makes the reasoning behind a code change searchable.",
+      highlights: ["Manually authored decisions, tradeoffs, and incidents. SQLite and TF-IDF retrieval, exposed through an API, timeline, and MCP tool."],
+      scope: "Early prototype with manually authored memory.",
+      stack: ["Python", "FastAPI", "SQLite", "TF-IDF", "React", "TypeScript", "MCP"],
       liveUrl: "https://memory-os-sigma.vercel.app/",
       repoUrl: "https://github.com/chrislazar25/memoryOS",
-      preview: {
-        alt: "MemoryOS query UI.",
-        src: "/previews/memoryos.png",
-        media: "image",
-      }
-    },
-    {
-      title: "Multilingual contract intelligence",
-      summary:
-        "Dell deal teams were burning half-days on foreign-language paper. I owned the full loop—models, APIs, UX—so execs and counsel get clause-level signal in minutes, not hours.",
-      highlights: [
-        "Cut review time on typical 50-page packs to a few minutes; heavier 200-page sets in ~10, across eight languages in one flow.",
-        "Product shape: translate → non-standard clause hunt → back-translate so reviewers stay in the language they trust.",
-        "Shipped behind FastAPI + React, containerized on Kubernetes, with Langfuse so latency and failures are operations problems, not mysteries.",
-      ],
-      stack: [
-        "Python",
-        "FastAPI",
-        "React",
-        "Docker",
-        "Kubernetes",
-        "Langfuse",
-      ],
-    },
-    {
-      title: "Contract metadata pipeline",
-      summary:
-        "Metadata was stuck in manual re-keying. I designed two tight services that turn contract docs into structured rows analysts proofread—not retype.",
-      highlights: [
-        "Structured capture for 10+ deal fields—parties, theatre, dates, amendments, TOC hooks—enough to unblock downstream systems.",
-        "Cron-driven ingest from SharePoint; validated payloads sync to QuickBase so the system of record stays authoritative.",
-        "Vault-backed secrets so compliance and security reviews stay boring—the way infra should be at scale.",
-      ],
-      stack: [
-        "Python",
-        "FastAPI",
-        "SharePoint API",
-        "QuickBase API",
-        "Vault",
-      ],
-    },
-    {
-      title: "LLM serving & company-wide benchmarks",
-      summary:
-        "The flagship assistant had to feel instant. I drove the serving optimizations, then set the internal bar leaders used before a model could ship to internal teams.",
-      highlights: [
-        "Delivered ~sub-2s turns and ~500ms first token on the internal rollout path via quantization and engine changes.",
-        "Made time-to-first-token, throughput, and memory non-negotiable metrics—fewer one-off decks, more comparable runs.",
-        "Built a reusable harness so every new checkpoint proves itself against the same baseline before prod.",
-      ],
-      stack: [
-        "Python",
-        "LLM Quantization",
-        "vLLM",
-        "ONNX Runtime",
-        "Benchmarking",
-      ],
-    },
-    {
-      title: "Accounts receivable copilot",
-      summary:
-        "Finance wanted English questions over receivables data without wagering the close on bad SQL. I shipped a schema-grounded text-to-SQL copilot with explicit uncertainty handling.",
-      highlights: [
-        "~80% executable accuracy after tuning to real tables, joins, and naming—measured, not vibes.",
-        "Ensemble candidates plus self-correction catch weak generations before they pollute reporting.",
-        "Risk posture tuned for CFO-grade work: traceability, conservative failure, no silent heroics.",
-      ],
-      stack: [
-        "Python",
-        "Text-to-SQL",
-        "Fine-tuning",
-        "Prompt Engineering",
-        "PostgreSQL",
-      ],
+      preview: { alt: "MemoryOS query interface and commit-linked decision history.", src: "/previews/memoryos.png", media: "image" },
     },
     {
       title: "Gospel Bot",
-      summary:
-        "Daily gospel reflections for a family WhatsApp group: pulls today's reading from the Catholic lectionary, matches a personal archive of messages by scripture citation, and delivers the best fit via Green API—with email previews, retries, and a watchdog.",
-      highlights: [
-        "Normalized book names and citation formats so archive entries align with the day's text—including multi-chapter ranges and non-standard shorthand.",
-        "IST cron: preview email, scheduled send, watchdog retries; failed sends queue for the next flush instead of vanishing.",
-        "Green API for WhatsApp delivery; Nodemailer for Gmail previews and alerts; Catholic Readings API with scripture fallback when the archive has no match.",
-      ],
+      category: "more",
+      summary: "Daily gospel reflections for a family WhatsApp group, matched to a personal archive by scripture citation.",
+      highlights: ["Normalizes scripture references, sends email previews, and schedules WhatsApp delivery with retries and a watchdog."],
       stack: ["Node.js", "Green API", "node-cron", "Nodemailer", "REST"],
       repoUrl: "https://github.com/chrislazar25/gospel-bot",
     },
     {
       title: "Interactive 3D fleet visualization",
-      summary:
-        "An open-ended product surface: complex vehicle geometry in the browser, treated like something revenue teams might actually use—legible controls, forgiving navigation, steady frame times on real laptops.",
-      highlights: [
-        "UX aimed at non-3D-native operators: camera, selection, and feedback that hold up under time pressure.",
-        "Render and load budget disciplined enough that the scene stays usable outside a demo machine.",
-        "Config-friendly structure so assets and rules can evolve without rewriting the scene graph.",
-      ],
+      category: "more",
+      summary: "An interactive vehicle scene with camera, selection, and navigation controls for people outside 3D tools.",
+      highlights: ["Configurable assets and scene rules, with attention to browser load and rendering budgets."],
       stack: ["React Three Fiber", "TypeScript", "React", "Express"],
       liveUrl: "https://3d-truck-sim.vercel.app/",
       repoUrl: "https://github.com/chrislazar25/3d_truck_sim",
       preview: {
-        alt: "Screen recording: orbiting the 3D fleet scene, selecting a vehicle, and using the on-screen controls.",
+        alt: "Screen recording of the 3D fleet scene, vehicle selection, and on-screen controls.",
         loomUrl: "https://www.loom.com/share/f304574d71ad4c469e63337ce8d68967",
       },
     },
   ] satisfies Project[],
+  productionWork: [
+    {
+      title: "Invoice portal agent",
+      summary: "Pilot-stage browser automation for invoice workflows across SAP Ariba and Coupa.",
+      highlights: ["My work covers the tools and agent workflow for filtering and downloading rejection reports by customer and date."],
+    },
+    {
+      title: "Multilingual contract intelligence",
+      summary: "A translate, clause-review, and back-translate workflow for Dell deal teams across eight languages.",
+      highlights: ["Owned models, APIs, and UX. Typical 50-page reviews took a few minutes; heavier 200-page sets took about 10 on the internal workflow."],
+    },
+    {
+      title: "Contract metadata pipeline",
+      summary: "Two services turn contracts into structured fields for analyst review and downstream systems.",
+      highlights: ["SharePoint ingestion, 10+ deal fields, validated QuickBase synchronization, and Vault-backed secrets."],
+    },
+    {
+      title: "LLM serving & company-wide benchmarks",
+      summary: "Serving optimizations and a reusable benchmark for internal model rollout decisions.",
+      highlights: ["Approximately sub-2-second turns and 500 ms to first token on the internal rollout path. Shared throughput and memory baselines."],
+    },
+    {
+      title: "Accounts receivable copilot",
+      summary: "A schema-grounded text-to-SQL copilot with uncertainty handling for finance questions.",
+      highlights: ["About 80% executable accuracy after tuning to internal schemas, with ensemble candidates and self-correction."],
+    },
+  ] satisfies ProductionWork[],
+  aboutParagraphs: [
+    "I work across product, APIs, and model behavior. At Dell, that has meant taking AI workflows through implementation and into production operations.",
+    "Outside work, I build experiments around questions I want to understand, and small tools for people in my life. I'm actively relocating to the San Francisco Bay Area.",
+  ],
   skillGroups: [
-    {
-      title: "AI systems & evals",
-      items: [
-        "Prompting, structured outputs, tool use",
-        "RAG patterns: chunking, retrieval, re-ranking basics",
-        "Regression evals and shared baselines before prod (LLM-as-judge with eyes open)",
-      ],
-    },
-    {
-      title: "Product backends & integrations",
-      items: [
-        "REST/JSON APIs, auth boundaries, rate limits",
-        "Async jobs and retries; idempotency for third-party hooks",
-        "Testing and error contracts operators can trust",
-      ],
-    },
-    {
-      title: "Data loops & observability",
-      items: [
-        "ETL-lite pipelines, embeddings, labeling workflows",
-        "Notebooks to production: config-driven experiments",
-        "Logs, metrics, traces—latency and failure modes you can see in prod",
-      ],
-    },
-    {
-      title: "Velocity, deploys & performance",
-      items: [
-        "CI, typed TS/Python, linting",
-        "Ship paths: containers, PaaS, Kubernetes when the stack demands it",
-        "Latency and throughput budgets: web vitals, API SLAs, serving stack tuning",
-      ],
-    },
-  ] satisfies SkillGroup[],
-} as const;
+    { title: "AI systems", items: ["Tool use, retrieval, text-to-SQL, and regression evals"] },
+    { title: "Product engineering", items: ["Python, TypeScript, React, APIs, and integrations"] },
+    { title: "Production", items: ["Serving, tracing, containers, and Kubernetes"] },
+  ],
+};
